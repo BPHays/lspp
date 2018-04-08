@@ -11,7 +11,7 @@ matrix:
 #            - clang-5.0
 #            - g++-7
             - python3.6
-            - python3.6-pip
+            - python3-pip
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
@@ -20,7 +20,7 @@ matrix:
 install:
   - export PATH="`pwd`/build:${PATH}"
   - wget https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip && unzip -q ninja-linux.zip -d build
-  - pip3.6 install meson
+  - python3.6 -m pip3 install meson
 
 script:
   - meson builddir
