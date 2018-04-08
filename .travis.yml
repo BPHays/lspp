@@ -8,8 +8,8 @@ matrix:
       addons:
         apt:
           packages:
-#            - clang-5.0
-#            - g++-7
+            - clang-5.0
+            - g++-7
             - python3.6
           sources:
             - ubuntu-toolchain-r-test
