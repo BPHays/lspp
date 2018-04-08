@@ -13,4 +13,12 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
 
-script: make
+          install:
+              - export PATH="`pwd`/build:${PATH}"
+              - wget https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip && unzip -q ninja-linux.zip -d build
+              - pip3 install meson
+
+script:
+  - meson builddir
+  - ninja -C builddir
+  - ninja -C builddir test
