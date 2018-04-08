@@ -3,12 +3,12 @@ os: linux
 matrix:
   include:
     - os: linux
-      env: COMPILER_NAME=clang CXX=clang++-6.0 CC=clang-6.0
+      env: COMPILER_NAME=clang CXX=clang++-5.0 CC=clang-5.0
       addons:
         apt:
           packages:
-            - clang-6.0
+            - clang-5.0
           sources:
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-trusty-5.0
 
 script: make
