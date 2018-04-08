@@ -8,7 +8,7 @@ matrix:
         apt:
           packages:
             - clang-5.0
-            - gcc-7.0
+            - g++-7
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
