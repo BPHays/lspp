@@ -18,24 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef INCLUDE_FORMATTEDPATH_HH_
+#define INCLUDE_FORMATTEDPATH_HH_
+
 #include <experimental/filesystem>
 #include <iostream>
-#include <optional>
 
 #include "format.hh"
-#include "formattedPath.hh"
 
 namespace fs = std::experimental::filesystem;
 
-int main(int argc, char ** argv) {
-  (void) argc;
-  (void) argv;
-  for (auto const & ent : fs::directory_iterator(argv[1])) {
-    auto p = fs::path(ent);
-    auto fmt = lspp::Format::get_format(p);
-    auto name = p.filename();
-    lspp::FormattedPath fp(name, fmt);
-    std::cout << fp << "\n";
-  }
-  return 0;
-}
+namespace lspp {
+
+class FormattedPath {
+  const fs::path& path;
+  const Format& fmt;
+ public:
+  const fs::path& get_path() const { return path; }
+  const Format& get_fmt() const { return fmt; }
+  FormattedPath(const fs::path& path, const Format& fmt) :
+    path(path), fmt(fmt) {}
+  constexpr static char const * const reset_ansi_seq = "\033[0m";
+};
+
+
+std::ostream& operator<<(std::ostream& os, const FormattedPath& fp);
+
+}  // namespace lspp
+
+#endif  // INCLUDE_FORMATTEDPATH_HH_
