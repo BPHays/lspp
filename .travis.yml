@@ -1,3 +1,4 @@
+sudo: false
 language: generic
 os: linux
 matrix:
@@ -9,14 +10,17 @@ matrix:
           packages:
             - clang-5.0
             - g++-7
+            - python3.6
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
+            - deadsnakes
 
-          install:
-              - export PATH="`pwd`/build:${PATH}"
-              - wget https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip && unzip -q ninja-linux.zip -d build
-              - pip3 install meson
+install:
+  - export PATH="`pwd`/build:${PATH}"
+  - wget https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip && unzip -q ninja-linux.zip -d build
+  - wget https://bootstrap.pypa.io/get-pip.py && python3.6 get-pip.py --user
+  - python3.6 -m pip install --user meson
 
 script:
   - meson builddir
