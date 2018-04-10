@@ -22,9 +22,12 @@
 #define INCLUDE_FORMATTEDPATH_HH_
 
 #include <experimental/filesystem>
+#include <optional>
 #include <iostream>
 
 #include "format.hh"
+#include "longListing.hh"
+#include "padding.hh"
 
 namespace fs = std::experimental::filesystem;
 
@@ -33,14 +36,22 @@ namespace lspp {
 class FormattedPath {
   const fs::path& path;
   const Format& fmt;
+  const std::optional<LongListing> ll;
+  const Padding pad;
  public:
   const fs::path& get_path() const { return path; }
   const Format& get_fmt() const { return fmt; }
-  FormattedPath(const fs::path& path, const Format& fmt) :
-    path(path), fmt(fmt) {}
+  const std::optional<LongListing>& get_ll() const { return ll; }
+  FormattedPath(const fs::path& path, const Format& fmt,
+      const std::optional<LongListing> ll = std::nullopt) :
+    path(path), fmt(fmt), ll(ll) { std::cout << "fp()\n"; }
+
+  FormattedPath(const fs::path& path, const Format& fmt,
+      const std::optional<LongListing> ll, Padding pad) :
+    path(path), fmt(fmt), ll(ll), pad(pad) { std::cout << "fp(pad)\n"; }
+
   constexpr static char const * const reset_ansi_seq = "\033[0m";
 };
-
 
 std::ostream& operator<<(std::ostream& os, const FormattedPath& fp);
 

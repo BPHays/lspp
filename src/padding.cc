@@ -18,20 +18,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <iostream>
-
-#include "formattedPath.hh"
+#include "padding.hh"
 
 namespace lspp {
 
-std::ostream& operator<<(std::ostream& os, const FormattedPath& fp) {
-  os << fp.get_fmt();
-  if (auto const ll = fp.get_ll(); ll) {
-    os << *ll << " ";
+static bool update_field_max(std::size_t* current, std::size_t candidate) {
+  if (candidate > *current) {
+    *current = candidate;
+    return true;
+  } else {
+    return false;
   }
-  os << fp.get_path().string();
-  os << FormattedPath::reset_ansi_seq;
-  return os;
+}
+
+bool Padding::update_permissions_max(std::size_t permissions) {
+  return update_field_max(&this->permissions, permissions);
+}
+
+bool Padding::update_hard_links_max(std::size_t hard_links) {
+  return update_field_max(&this->hard_links, hard_links);
+}
+
+bool Padding::update_owner_max(std::size_t owner) {
+  return update_field_max(&this->owner, owner);
+}
+
+bool Padding::update_group_max(std::size_t group) {
+  return update_field_max(&this->group, group);
+}
+
+bool Padding::update_size_max(std::size_t size) {
+  return update_field_max(&this->size, size);
+}
+
+bool Padding::update_modified_date_max(std::size_t modified_date) {
+  return update_field_max(&this->modified_date, modified_date);
+}
+
+bool Padding::update_file_name_max(std::size_t file_name) {
+  return update_field_max(&this->file_name, file_name);
 }
 
 }  // namespace lspp

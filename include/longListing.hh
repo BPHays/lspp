@@ -18,20 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <iostream>
+#ifndef INCLUDE_LONGLISTING_HH_
+#define INCLUDE_LONGLISTING_HH_
 
-#include "formattedPath.hh"
+#include <experimental/filesystem>
+#include <iostream>
+#include <string>
+
+#include "padding.hh"
+
+namespace fs = std::experimental::filesystem;
 
 namespace lspp {
 
-std::ostream& operator<<(std::ostream& os, const FormattedPath& fp) {
-  os << fp.get_fmt();
-  if (auto const ll = fp.get_ll(); ll) {
-    os << *ll << " ";
-  }
-  os << fp.get_path().string();
-  os << FormattedPath::reset_ansi_seq;
-  return os;
-}
+class LongListing {
+  fs::path path;
+  std::string owner;
+  std::string group;
+  Padding pad;
+ public:
+  explicit LongListing(fs::path path);
+  explicit LongListing(fs::path path, Padding pad);
+  const fs::path& get_path() const { return path; }
+  const std::string get_owner() const { return owner; }
+  const std::string get_group() const { return group; }
+  const Padding get_pad() const { return pad; }
+  std::uintmax_t get_hard_link_count() const;
+  std::uintmax_t get_file_size() const;
+  fs::perms get_permissions() const;
+};
+
+std::ostream& operator<<(std::ostream& os, const LongListing ll);
 
 }  // namespace lspp
+
+#endif  // INCLUDE_LONGLISTING_HH_

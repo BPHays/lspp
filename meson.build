@@ -8,7 +8,7 @@ asan_dep = cc.find_library('asan', required : true)
 
 incdir = include_directories('include')
 
-sources = ['src/main.cc', 'src/format.cc', 'src/formattedPath.cc']
+sources = ['src/main.cc', 'src/format.cc', 'src/formattedPath.cc', 'src/longListing.cc', 'src/padding.cc']
 
 cxx_args = ['-fsanitize=address', '-Wall', '-Wextra']
 

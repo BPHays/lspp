@@ -18,20 +18,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <iostream>
+#ifndef INCLUDE_PADDING_HH_
+#define INCLUDE_PADDING_HH_
 
-#include "formattedPath.hh"
+#include <cstddef>
+#include <iostream>
 
 namespace lspp {
 
-std::ostream& operator<<(std::ostream& os, const FormattedPath& fp) {
-  os << fp.get_fmt();
-  if (auto const ll = fp.get_ll(); ll) {
-    os << *ll << " ";
-  }
-  os << fp.get_path().string();
-  os << FormattedPath::reset_ansi_seq;
-  return os;
-}
+struct Padding {
+  std::size_t permissions;
+  std::size_t hard_links;
+  std::size_t owner;
+  std::size_t group;
+  std::size_t size;
+  std::size_t modified_date;
+  std::size_t file_name;
+  bool update_permissions_max(std::size_t permissions);
+  bool update_hard_links_max(std::size_t hard_links);
+  bool update_owner_max(std::size_t owner);
+  bool update_group_max(std::size_t group);
+  bool update_size_max(std::size_t size);
+  bool update_modified_date_max(std::size_t modified_date);
+  bool update_file_name_max(std::size_t file_name);
+  Padding() : permissions(0),
+    hard_links(0), owner(0), group(0),
+    size(0), modified_date(0), file_name(0)
+  {std::cout << "Padding()\n"; }
+
+  Padding(const Padding& pad) : permissions(pad.permissions),
+    hard_links(pad.hard_links), owner(pad.owner), group(pad.group),
+    size(pad.size), modified_date(pad.modified_date), file_name(pad.file_name)
+  {std::cout << "Padding(const Padding& pad), " << size << "\n"; }
+};
 
 }  // namespace lspp
+
+#endif  // INCLUDE_PADDING_HH_
