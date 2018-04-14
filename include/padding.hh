@@ -27,13 +27,13 @@
 namespace lspp {
 
 struct Padding {
-  std::size_t permissions;
-  std::size_t hard_links;
-  std::size_t owner;
-  std::size_t group;
-  std::size_t size;
-  std::size_t modified_date;
-  std::size_t file_name;
+  std::size_t permissions = 0;
+  std::size_t hard_links = 0;
+  std::size_t owner = 0;
+  std::size_t group = 0;
+  std::size_t size = 0;
+  std::size_t modified_date = 0;
+  std::size_t file_name = 0;
   bool update_permissions_max(std::size_t permissions);
   bool update_hard_links_max(std::size_t hard_links);
   bool update_owner_max(std::size_t owner);
@@ -41,15 +41,7 @@ struct Padding {
   bool update_size_max(std::size_t size);
   bool update_modified_date_max(std::size_t modified_date);
   bool update_file_name_max(std::size_t file_name);
-  Padding() : permissions(0),
-    hard_links(0), owner(0), group(0),
-    size(0), modified_date(0), file_name(0)
-  {std::cout << "Padding()\n"; }
-
-  Padding(const Padding& pad) : permissions(pad.permissions),
-    hard_links(pad.hard_links), owner(pad.owner), group(pad.group),
-    size(pad.size), modified_date(pad.modified_date), file_name(pad.file_name)
-  {std::cout << "Padding(const Padding& pad), " << size << "\n"; }
+  std::size_t get_total_width();
 };
 
 }  // namespace lspp

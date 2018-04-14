@@ -6,7 +6,7 @@ fs_dep = cc.find_library('stdc++fs', required : true)
 
 asan_dep = cc.find_library('asan', required : true)
 
-incdir = include_directories('include')
+incdir = include_directories('include', 'include/tclap-1.2.2/include')
 
 sources = ['src/main.cc', 'src/format.cc', 'src/formattedPath.cc', 'src/longListing.cc', 'src/padding.cc']
 

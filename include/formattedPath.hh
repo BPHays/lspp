@@ -44,11 +44,11 @@ class FormattedPath {
   const std::optional<LongListing>& get_ll() const { return ll; }
   FormattedPath(const fs::path& path, const Format& fmt,
       const std::optional<LongListing> ll = std::nullopt) :
-    path(path), fmt(fmt), ll(ll) { std::cout << "fp()\n"; }
+    path(path), fmt(fmt), ll(ll) { /*std::cout << "fp()\n";*/ }
 
   FormattedPath(const fs::path& path, const Format& fmt,
       const std::optional<LongListing> ll, Padding pad) :
-    path(path), fmt(fmt), ll(ll), pad(pad) { std::cout << "fp(pad)\n"; }
+    path(path), fmt(fmt), ll(ll), pad(pad) { /*std::cout << "fp(pad)\n";*/ }
 
   constexpr static char const * const reset_ansi_seq = "\033[0m";
 };

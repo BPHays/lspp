@@ -36,6 +36,9 @@ class LongListing {
   std::string owner;
   std::string group;
   Padding pad;
+  bool query_os_for_user(const struct stat& stats);
+  bool query_os_for_group(const struct stat& stats);
+  bool query_os_for_user_and_group(const fs::path& path);
  public:
   explicit LongListing(fs::path path);
   explicit LongListing(fs::path path, Padding pad);

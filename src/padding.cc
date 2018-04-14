@@ -59,4 +59,20 @@ bool Padding::update_file_name_max(std::size_t file_name) {
   return update_field_max(&this->file_name, file_name);
 }
 
+std::size_t Padding::get_total_width() {
+  // If a field is present then it has associated padding
+  auto const if_present_with_space = [](auto n) {
+    return n ? n + 1 : 0;
+  };
+
+  // Calculate the total width of all fields
+  return if_present_with_space(permissions) +
+    if_present_with_space(hard_links) +
+    if_present_with_space(owner) +
+    if_present_with_space(group) +
+    if_present_with_space(size) +
+    if_present_with_space(modified_date) +
+    if_present_with_space(file_name);
+}
+
 }  // namespace lspp
