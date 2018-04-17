@@ -49,6 +49,7 @@ class LongListing {
   std::uintmax_t get_hard_link_count() const;
   std::uintmax_t get_file_size() const;
   fs::perms get_permissions() const;
+  std::size_t get_length() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const LongListing ll);

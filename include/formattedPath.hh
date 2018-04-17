@@ -42,6 +42,7 @@ class FormattedPath {
   const fs::path& get_path() const { return path; }
   const Format& get_fmt() const { return fmt; }
   const std::optional<LongListing>& get_ll() const { return ll; }
+  std::size_t get_length() const;
   FormattedPath(const fs::path& path, const Format& fmt,
       const std::optional<LongListing> ll = std::nullopt) :
     path(path), fmt(fmt), ll(ll) { /*std::cout << "fp()\n";*/ }

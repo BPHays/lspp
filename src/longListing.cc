@@ -98,6 +98,12 @@ fs::perms LongListing::get_permissions() const {
   return fs::status(path).permissions();
 }
 
+std::size_t LongListing::get_length() const {
+  std::ostringstream oss;
+  oss << *this;
+  return oss.str().length();
+}
+
 static std::ostream& operator<<(std::ostream& os, const fs::perms p) {
   return os
     << ((p & fs::perms::owner_read) != fs::perms::none ? "r" : "-")

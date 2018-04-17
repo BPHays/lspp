@@ -3,7 +3,6 @@ project('lspp', 'cpp', default_options : ['cpp_std=c++17'])
 cc = meson.get_compiler('cpp')
 
 fs_dep = cc.find_library('stdc++fs', required : true)
-
 asan_dep = cc.find_library('asan', required : true)
 
 incdir = include_directories('include', 'include/tclap-1.2.2/include')

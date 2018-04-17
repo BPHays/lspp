@@ -25,6 +25,7 @@
 #include <optional>
 #include <algorithm>
 #include <iostream>
+#include <functional>
 
 #include <tclap/CmdLine.h>
 
@@ -37,24 +38,48 @@ namespace fs = std::experimental::filesystem;
 
 namespace lspp {
 
+typedef std::function<void(const fs::path&, const lspp::Format&,
+    const Padding&)> printer;
+
+void short_printer(const fs::path& path, const lspp::Format& fmt,
+    const Padding& pad) {
+  auto name = path.filename();
+  lspp::FormattedPath fp(name, fmt);
+  std::cout << fp << "\n";
+}
+
+std::size_t short_length(const fs::path& path, const lspp::Format& fmt) {
+  auto name = path.filename();
+  lspp::FormattedPath fp(name, fmt);
+  return fp.get_length();
+}
+
+void long_printer(const fs::path& path, const lspp::Format& fmt,
+    const Padding& pad) {
+  auto name = path.filename();
+  lspp::LongListing ll(path, pad);
+  lspp::FormattedPath fp(name, fmt, ll, pad);
+  std::cout << fp << "\n";
+}
+
+std::size_t long_length(const fs::path& path, const lspp::Format& fmt) {
+  auto name = path.filename();
+  lspp::LongListing ll(path);
+  lspp::FormattedPath fp(name, fmt, ll);
+  return fp.get_length();
+}
+
 void print_single(const std::vector<fs::path>& paths, const Padding& pad,
-    bool longListing) {
-  // print
+  printer print) {
+  // Print the paths in a single column
   for (auto const & p : paths) {
     auto fmt = lspp::Format::get_format(p);
     auto name = p.filename();
-    lspp::LongListing ll(p, pad);
-    if (longListing) {
-      lspp::FormattedPath fp(name, fmt, ll, pad);
-      std::cout << fp << "\n";
-    } else {
-      lspp::FormattedPath fp(name, fmt);
-      std::cout << fp << "\n";
-    }
+    print(p, fmt, pad);
   }
 }
 
-// Get the terminal width in a
+// Get the terminal width
 std::size_t get_terminal_width() {
   struct winsize w;
   int retval = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -73,18 +98,19 @@ std::size_t get_terminal_width() {
 // else return an empty optional to imply no solution could be found
 auto test_width(
     const std::vector<fs::path>& paths, const std::size_t term_width,
-    const std::size_t n_cols) {
+    const std::size_t n_cols, const Padding& pad) {
   std::size_t total_width = 0;
-  std::vector<std::size_t> col_widths = std::vector<std::size_t>(n_cols);
-  for (auto & value : col_widths) {
-    value = 0;
-  }
+  auto col_widths = std::vector<std::size_t>(n_cols, 0);
 
   for (std::size_t i = 0; i < paths.size(); i += n_cols) {
     for (std::size_t col = 0;
          total_width < term_width && col < n_cols && i + col < paths.size();
          ++col) {
-      std::size_t len = paths[i + col].filename().string().length();
+      auto const& path = paths[i + col];
+      auto fmt = lspp::Format::get_format(path);
+      std::size_t len = long_length(path, fmt);
+
+      //std::size_t len = paths[i + col].filename().string().length();
       if (len > col_widths[col]) {
         total_width -= col_widths[col];
         total_width += len;
@@ -106,15 +132,23 @@ void print_columns(const std::vector<fs::path>& paths, const Padding& pad,
   std::size_t n_cols = term_width;
   std::optional<std::vector<std::size_t>> col_widths = std::nullopt;
   do {
-    col_widths = test_width(paths, term_width, n_cols);
+    col_widths = test_width(paths, term_width, n_cols, pad);
   } while (!col_widths && 0 < n_cols--);
 
   // Actually print the paths
   for (std::size_t i = 0; i < paths.size(); ++i) {
-    // Print the path
+    // Print the path itself
+    auto name = paths[i].filename();
+    auto fmt = lspp::Format::get_format(paths[i]);
+    lspp::LongListing ll(paths[i], pad);
+    lspp::FormattedPath fp(name, fmt, ll);
     std::cout << std::left << std::setw((*col_widths)[i % col_widths->size()])
-      << paths[i].filename().string();
+      << fp;
 
+    //  std::cout << std::left << std::setw((*col_widths)[i % col_widths->size()])
+    //    << paths[i].filename().string();
+
+    // Print whatever whitespace is required
     if (col_widths->size() - 1 == i % col_widths->size()) {
       // If the end of a row then add a newline
       std::cout << "\n";
@@ -160,8 +194,13 @@ int main(int argc, char ** argv) {
     pad.update_file_name_max(ll.get_path().filename().string().length());
   }
 
-  // lspp::print_single(paths, pad, longSwitch.getValue());
-  lspp::print_columns(paths, pad, longSwitch.getValue());
+  if (longSwitch.getValue()) {
+    lspp::print_single(paths, pad, lspp::long_printer);
+  } else {
+    // lspp::print_single(paths, pad, lspp::short_printer);
+    lspp::print_columns(paths, pad, longSwitch.getValue());
+  }
+  // lspp::print_columns(paths, pad, longSwitch.getValue());
 
   return 0;
 }
